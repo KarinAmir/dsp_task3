@@ -9,8 +9,10 @@ from pyqtgraph.Qt import QtCore, QtGui
 
 
 fourier = ctypes.CDLL('./fourier.so')
+
 ft = fourier.dft
 fft=fourier.fft
+
 ft.restype = None
 ft.argtypes = [ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
 
@@ -19,27 +21,28 @@ ft.argtypes = [ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
 
 fft.restype = None
 fft.argtypes =[ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),ctypes.c_int]
-N =[16,32, 128,256,1024,2048,4096,8192]
+
+dft_time= []
+fft_time= []
+fourier_error=[]
+
+N =[16,32,128,256,1024,2048,4096,8192]
 Ts = 1/1024
 t = np.arange(0,10+Ts,Ts) #(start,stop,step)
 x = 1*np.cos(2*np.pi*500*t)
 y = 0*np.sin(2*np.pi*3*t)
 z = np.column_stack((x, y))
 z1 = np.column_stack((x, y))
-dft_time= []
-fft_time= []
-fourier_error=[]
+
 for i in N :
 
     before_dft= time.time()
     ft(z,z,i)
-    # ft_error.append(ft)
     after_dft= time.time()    
     dft_time.append(after_dft-before_dft)
     print ("when N =",i, "dft_time =", dft_time)
     before_fft= time.time()    
     fft(z1,i)
-    # fft_error.append(fft)
     after_fft= time.time()
     fft_time.append(after_fft-before_fft)
     print("when N =",i, "fft_time =",fft_time)
